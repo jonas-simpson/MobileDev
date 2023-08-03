@@ -21,17 +21,53 @@ public class PlayerBehavior : MonoBehaviour
     [Range(0, 10)]
     public float rollSpeed = 5;
 
+    [Header("Swipe properties")]
+    [Tooltip("How far will the player move upon swiping")]
+    public float swipeMove = 2f;
+
+    [Tooltip("How far must the player swipe before we will execute the action (in inches)")]
+    public float minSwipeDistance = 0.25f;
+
+    /// <summary>
+    /// Used to hold the value that converts minSwipeDistance to pixels
+    /// </summary>
+    private float minSwipeDistancePixels;
+
+    /// <summary>
+    /// Stores the starting position of mobile touch events
+    /// </summary>
+    private Vector2 touchStart;
+
     // Start is called before the first frame update
     void Start()
     {
         //Get access to our Rigidbody component
         rb = gameObject.GetComponent<Rigidbody>();
+
+        minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
+    }
+
+    /// <summary>
+    /// Update is called once per frame
+    /// </summary>
+    private void Update()
+    {
+        //Check if we are running on a mobile device
+#if UNITY_IOS || UNITY_ANDROID
+        //Check if Input has registered more than zero touches
+        if (Input.touchCount > 0)
+        {
+            //Store the first touch detected
+            Touch touch = Input.touches[0];
+
+            SwipeTeleport(touch);
+        }
+#endif
     }
 
     /// <summary>
     /// FixedUpdate is called at a fixed framerate and is a prime place to put anything based on time.
     /// </summary>
-
     void FixedUpdate()
     {
         //Check if we're moving to the side
@@ -85,5 +121,54 @@ public class PlayerBehavior : MonoBehaviour
 
         return xMove * dodgeSpeed;
         ;
+    }
+
+    /// <summary>
+    /// Will teleport the player if swiped to the left or right
+    /// </summary>
+    /// <param name="touch">Current touch event</param>
+    private void SwipeTeleport(Touch touch)
+    {
+        //Check if touch just started
+        if (touch.phase == TouchPhase.Began)
+        {
+            //if so, set touchStart
+            touchStart = touch.position;
+        }
+        //if the touch has ended
+        else if (touch.phase == TouchPhase.Ended)
+        {
+            //Get the position the touch ended at
+            Vector2 touchEnd = touch.position;
+
+            //Calculate the difference between the beginning and end of the touch on the x axis
+            float x = touchEnd.x - touchStart.x;
+
+            //If we are not moving far enough, don't do the teleport
+            if (Mathf.Abs(x) < minSwipeDistancePixels)
+            {
+                return;
+            }
+
+            Vector3 moveDirection;
+            //if moved negatively in the x axis, move left
+            if (x < 0)
+            {
+                moveDirection = Vector3.left;
+            }
+            else
+            {
+                //Otherwise we're on the right
+                moveDirection = Vector3.right;
+            }
+
+            RaycastHit hit;
+            //Only move if we wouldn't hit something
+            if (!rb.SweepTest(moveDirection, out hit, swipeMove))
+            {
+                //Move the player
+                rb.MovePosition(rb.position + (moveDirection * swipeMove));
+            }
+        }
     }
 }
