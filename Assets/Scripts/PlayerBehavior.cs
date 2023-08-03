@@ -38,6 +38,18 @@ public class PlayerBehavior : MonoBehaviour
     /// </summary>
     private Vector2 touchStart;
 
+    [Header("Scaling properties")]
+    [Tooltip("The minimum size (in Unity units) that the player should be")]
+    public float minScale = 0.5f;
+
+    [Tooltip("The maximum size (in Unity units) that the player should be")]
+    public float maxScale = 3.0f;
+
+    /// <summary>
+    /// The current scale of the player
+    /// </summary>
+    private float currentScale = 1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,6 +73,8 @@ public class PlayerBehavior : MonoBehaviour
             Touch touch = Input.touches[0];
 
             SwipeTeleport(touch);
+
+            ScalePlayer();
         }
 #endif
     }
@@ -169,6 +183,47 @@ public class PlayerBehavior : MonoBehaviour
                 //Move the player
                 rb.MovePosition(rb.position + (moveDirection * swipeMove));
             }
+        }
+    }
+
+    /// <summary>
+    /// Will change the player's scale via pinching and stretching two touch events
+    /// </summary>
+    private void ScalePlayer()
+    {
+        //We must have two touches to check if we are scaling the object
+        if (Input.touchCount != 2)
+        {
+            return;
+        }
+        else
+        {
+            //Store the touches detected
+            Touch touch0 = Input.touches[0];
+            Touch touch1 = Input.touches[1];
+
+            //Find the position in the previous frame of each touch
+            Vector2 touch0Prev = touch0.position - touch0.deltaPosition;
+            Vector2 touch1Prev = touch1.position - touch1.deltaPosition;
+
+            //Find the distance (or magnitude) between the touches in each frame
+            float prevTouchDeltaMag = (touch0Prev - touch1Prev).magnitude;
+            float touchDeltaMag = (touch0Prev - touch1Prev).magnitude;
+
+            //Find the difference in distances between each frame
+            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+
+            //keep the change consistent no matter the framerate
+            float newScale = currentScale - (deltaMagnitudeDiff * Time.deltaTime);
+
+            //Ensure that it is valid
+            newScale = Mathf.Clamp(newScale, minScale, maxScale);
+
+            //Update the player's scale
+            transform.localScale = Vector3.one * newScale;
+
+            //Set our current scale for the next frame
+            currentScale = newScale;
         }
     }
 }
