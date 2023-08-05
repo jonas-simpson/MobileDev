@@ -208,7 +208,7 @@ public class PlayerBehavior : MonoBehaviour
 
             //Find the distance (or magnitude) between the touches in each frame
             float prevTouchDeltaMag = (touch0Prev - touch1Prev).magnitude;
-            float touchDeltaMag = (touch0Prev - touch1Prev).magnitude;
+            float touchDeltaMag = (touch0.position - touch1.position).magnitude;
 
             //Find the difference in distances between each frame
             float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
