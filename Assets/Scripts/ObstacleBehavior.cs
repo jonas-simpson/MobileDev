@@ -29,4 +29,21 @@ public class ObstacleBehavior : MonoBehaviour
         //Restarts the current level
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public GameObject explosion;
+
+    /// <summary>
+    /// If the object is tapped, we spawn an explosion and destroy this object
+    /// </summary>
+    private void PlayerTouch()
+    {
+        Debug.Log("Message received");
+        if(explosion!=null)
+        {
+            var particles = Instantiate(explosion, transform.position, Quaternion.identity);
+            Destroy(particles, 1.0f);
+        }
+
+        Destroy(this.gameObject);
+    }
 }

@@ -21,6 +21,14 @@ public class PlayerBehavior : MonoBehaviour
     [Range(0, 10)]
     public float rollSpeed = 5;
 
+    public enum MobileHorizMovement
+    {
+        Accelerometer,
+        ScreenTouch
+    }
+
+    public MobileHorizMovement horizMovement = MobileHorizMovement.Accelerometer;
+
     [Header("Swipe properties")]
     [Tooltip("How far will the player move upon swiping")]
     public float swipeMove = 2f;
@@ -73,7 +81,7 @@ public class PlayerBehavior : MonoBehaviour
             Touch touch = Input.touches[0];
 
             SwipeTeleport(touch);
-
+            TouchObjects(touch);
             ScalePlayer();
         }
 #endif
@@ -98,8 +106,13 @@ public class PlayerBehavior : MonoBehaviour
 
         //Check if we are running on a mobile device
 #if UNITY_IOS || UNITY_ANDROID
+        if (horizMovement == MobileHorizMovement.Accelerometer)
+        {
+            //Move player based on the direction of the accelerometer
+            horizontalSpeed = Input.acceleration.x * dodgeSpeed;
+        }
         //Check if input has registered more than zero touches
-        if (Input.touchCount > 0)
+        if (horizMovement == MobileHorizMovement.ScreenTouch)
         {
             //Store the first touch detected
             Touch touch = Input.touches[0];
@@ -134,7 +147,6 @@ public class PlayerBehavior : MonoBehaviour
         }
 
         return xMove * dodgeSpeed;
-        ;
     }
 
     /// <summary>
@@ -224,6 +236,30 @@ public class PlayerBehavior : MonoBehaviour
 
             //Set our current scale for the next frame
             currentScale = newScale;
+        }
+    }
+
+    /// <summary>
+    /// Will determine if we are touching a game object and if so, call events for it
+    /// </summary>
+    /// <param name="touch">Our touch event</param>
+    private static void TouchObjects(Touch touch)
+    {
+        //Convert the position into a ray
+        Ray touchRay = Camera.main.ScreenPointToRay(touch.position);
+
+        RaycastHit hit;
+
+        //Create a layermask that will collide with all possible channels
+        int layerMask = ~0;
+
+        Debug.Log("Getting ready to send ray");
+        //Are we touching an object with a collider?
+        if(Physics.Raycast(touchRay, out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            Debug.Log("Raycast hit!!");
+            //Call the playertouch function if it exists on a component attached to this object
+            hit.transform.SendMessage("PlayerTouch", SendMessageOptions.DontRequireReceiver);
         }
     }
 }
