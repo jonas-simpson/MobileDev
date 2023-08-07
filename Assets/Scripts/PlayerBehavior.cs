@@ -72,6 +72,12 @@ public class PlayerBehavior : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        //If the game is paused, don't do anything
+        if (PauseScreenBehavior.paused)
+        {
+            return;
+        }
+
         //Check if we are running on a mobile device
 #if UNITY_IOS || UNITY_ANDROID
         //Check if Input has registered more than zero touches
@@ -92,6 +98,12 @@ public class PlayerBehavior : MonoBehaviour
     /// </summary>
     void FixedUpdate()
     {
+        //If the game is paused, don't do anything
+        if (PauseScreenBehavior.paused)
+        {
+            return;
+        }
+
         //Check if we're moving to the side
         var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
 
@@ -255,7 +267,15 @@ public class PlayerBehavior : MonoBehaviour
 
         Debug.Log("Getting ready to send ray");
         //Are we touching an object with a collider?
-        if(Physics.Raycast(touchRay, out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Ignore))
+        if (
+            Physics.Raycast(
+                touchRay,
+                out hit,
+                Mathf.Infinity,
+                layerMask,
+                QueryTriggerInteraction.Ignore
+            )
+        )
         {
             Debug.Log("Raycast hit!!");
             //Call the playertouch function if it exists on a component attached to this object
