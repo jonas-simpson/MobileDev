@@ -10,6 +10,15 @@ public class PauseScreenBehavior : MainMenuBehavior
     [Tooltip("Reference to the Pause Menu object to turn on / off")]
     public GameObject pauseMenu;
 
+    private void Start()
+    {
+        if (!UnityAdController.showAds)
+        {
+            //If not showing ads, just start the game
+            SetPauseMenu(false);
+        }
+    }
+
     /// <summary>
     /// Reloads our current level, effectively "restarting" the game
     /// </summary>
@@ -29,11 +38,5 @@ public class PauseScreenBehavior : MainMenuBehavior
         //If the game is paused, timescale is 0, otherwise 1
         Time.timeScale = (paused) ? 0 : 1;
         pauseMenu.SetActive(paused);
-    }
-
-    private void Start()
-    {
-        //Must be reset in Start or else game will be paused upon restart!
-        SetPauseMenu(false);
     }
 }

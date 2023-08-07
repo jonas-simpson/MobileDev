@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuBehavior : MonoBehaviour
 {
+    public UnityAdController adController;
+
     /// <summary>
     /// Will load a new scene upon being called
     /// </summary>
@@ -16,7 +18,8 @@ public class MainMenuBehavior : MonoBehaviour
         if (UnityAdController.showAds)
         {
             //Show an ad
-            UnityAdController.ShowAd();
+            if (adController)
+                adController.ShowAd();
         }
     }
 }

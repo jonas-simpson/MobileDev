@@ -32,6 +32,7 @@ public class UnityAdController
     /// </summary>
     void Start()
     {
+        #region Filter Platforms
 #if UNITY_IOS
         gameId = iOSGameId;
         adUnitId = iOSAdUnitId;
@@ -43,10 +44,13 @@ public class UnityAdController
         gameId = androidGameId;
         adUnitId = androidAdUnitId;
 #endif
+        #endregion
 
         //No need to initialize if it is already done
         if (!Advertisement.isInitialized)
         {
+            //Use the functions provided by this to allow custom behavior on the ads
+            //Advertisement.AddListener(this);
             Advertisement.Initialize(gameId, testMode);
         }
     }
@@ -54,23 +58,24 @@ public class UnityAdController
     /// <summary>
     /// Load content to the Ad Unit
     /// </summary>
-    public static void LoadAd()
+    public void LoadAd()
     {
         //IMPORTANT! On ly load content AFTER initialization
         Debug.Log("Loading ad: " + adUnitId);
-        Advertisement.Load(adUnitId);
+        Advertisement.Load(adUnitId, this);
     }
 
     /// <summary>
     /// Show the loaded content in the Ad Unit
     /// </summary>
-    public static void ShowAd()
+    public void ShowAd()
     {
         //Note that if the ad content wasn't previously loaded, this method will fail
         Debug.Log("Showing ad: " + adUnitId);
-        Advertisement.Show(adUnitId);
+        Advertisement.Show(adUnitId, this);
     }
 
+    #region IUnityAdsInitializationListener Methods
     public void OnInitializationComplete()
     {
         Debug.Log("Unity Ads initialization complete.");
@@ -80,27 +85,45 @@ public class UnityAdController
     {
         Debug.Log($"Unity ads initialization failed: {error.ToString()} - {message}");
     }
+    #endregion
 
-    public void OnUnityAdsAdLoaded(string placementId) { }
+    #region IUnityAdsLoadListener Methods
+    public void OnUnityAdsAdLoaded(string placementId)
+    {
+        //Actions to take when an Ad is ready to display, such as enabling a rewards button
+    }
 
     public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message)
     {
         Debug.Log($"Error loading ad unit: {adUnitId} - {error.ToString()} - {message}");
         // Optionally execute code if the Ad Unit fails to load, such as attempting to try again.
     }
+    #endregion
 
+    #region IUnityAdsShowListener Methods
     public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
     {
         Debug.Log($"Error showing ad unit {adUnitId}: {error.ToString()} - {message}");
         // Optionally execute code if the Ad Unit fails to show, such as loading another ad.
     }
 
-    public void OnUnityAdsShowStart(string placementId) { }
+    public void OnUnityAdsShowStart(string placementId)
+    {
+        //Pause the game while ad is shown
+        PauseScreenBehavior.paused = true;
+        Time.timeScale = 0f;
+    }
 
     public void OnUnityAdsShowClick(string placementId) { }
 
     public void OnUnityAdsShowComplete(
         string placementId,
         UnityAdsShowCompletionState showCompletionState
-    ) { }
+    )
+    {
+        //Unpause when ad is over
+        PauseScreenBehavior.paused = false;
+        Time.timeScale = 1f;
+    }
+    #endregion
 }
