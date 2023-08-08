@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,9 @@ public class UnityAdController
     /// </summary>
     public static bool showAds = true;
 
+    //Nullable type
+    public static DateTime? nextRewardTime = null;
+
     private string androidGameId = "5374187";
     private string iOSGameId = "5374186";
     private static string gameId;
@@ -26,6 +30,11 @@ public class UnityAdController
     /// If the game is in test mode or not
     /// </summary>
     private bool testMode = true;
+
+    /// <summary>
+    /// for holding the obstacle for continuing the game
+    /// </summary>
+    public static ObstacleBehavior obstacle;
 
     /// <summary>
     /// Unity Ads must be initialized or else ads will not work properly
@@ -51,7 +60,7 @@ public class UnityAdController
         {
             //Use the functions provided by this to allow custom behavior on the ads
             //Advertisement.AddListener(this);
-            Advertisement.Initialize(gameId, testMode);
+            Advertisement.Initialize(gameId, testMode, this);
         }
     }
 
@@ -73,6 +82,12 @@ public class UnityAdController
         //Note that if the ad content wasn't previously loaded, this method will fail
         Debug.Log("Showing ad: " + adUnitId);
         Advertisement.Show(adUnitId, this);
+    }
+
+    public void ShowRewardAd()
+    {
+        nextRewardTime = DateTime.Now.AddSeconds(15);
+        ShowAd();
     }
 
     #region IUnityAdsInitializationListener Methods
@@ -121,6 +136,11 @@ public class UnityAdController
         UnityAdsShowCompletionState showCompletionState
     )
     {
+        //If there is an obstacle, we can remove it to continue the game
+        if (obstacle != null && showCompletionState == UnityAdsShowCompletionState.COMPLETED)
+        {
+            obstacle.Continue();
+        }
         //Unpause when ad is over
         PauseScreenBehavior.paused = false;
         Time.timeScale = 1f;

@@ -36,8 +36,14 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
-    void Start()
+    private void Start()
     {
+        //If there is no UnityAdController, we can add it here
+        if (!GameObject.FindObjectOfType<UnityAdController>())
+        {
+            var adController = new GameObject("Unity Ad Manager");
+            adController.AddComponent<UnityAdController>();
+        }
         //Set our starting point
         nextTileLocation = startPoint;
         nextTileRotation = Quaternion.identity;
