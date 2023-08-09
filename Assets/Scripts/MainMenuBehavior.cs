@@ -19,7 +19,7 @@ public class MainMenuBehavior : MonoBehaviour
         {
             //Show an ad
             if (adController)
-                adController.ShowAd();
+                adController.LoadAd();
         }
     }
 }

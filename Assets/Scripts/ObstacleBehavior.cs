@@ -163,7 +163,7 @@ public class ObstacleBehavior : MonoBehaviour
 
                 //if the player clicks on button we want to play ad and then continue
 
-                contButton.onClick.AddListener(adController.ShowRewardAd);
+                contButton.onClick.AddListener(adController.LoadAd);
                 UnityAdController.obstacle = this;
 
                 //Change text to its original version

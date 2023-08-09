@@ -36,10 +36,15 @@ public class UnityAdController
     /// </summary>
     public static ObstacleBehavior obstacle;
 
+    private void Awake()
+    {
+        InitializeAds();
+    }
+
     /// <summary>
     /// Unity Ads must be initialized or else ads will not work properly
     /// </summary>
-    void Start()
+    public void InitializeAds()
     {
         #region Filter Platforms
 #if UNITY_IOS
@@ -59,7 +64,6 @@ public class UnityAdController
         if (!Advertisement.isInitialized)
         {
             //Use the functions provided by this to allow custom behavior on the ads
-            //Advertisement.AddListener(this);
             Advertisement.Initialize(gameId, testMode, this);
         }
     }
@@ -86,7 +90,6 @@ public class UnityAdController
 
     public void ShowRewardAd()
     {
-        nextRewardTime = DateTime.Now.AddSeconds(15);
         ShowAd();
     }
 
@@ -106,6 +109,8 @@ public class UnityAdController
     public void OnUnityAdsAdLoaded(string placementId)
     {
         //Actions to take when an Ad is ready to display, such as enabling a rewards button
+        Debug.Log("Ad loaded: " + placementId);
+        ShowRewardAd();
     }
 
     public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message)
@@ -144,6 +149,9 @@ public class UnityAdController
         //Unpause when ad is over
         PauseScreenBehavior.paused = false;
         Time.timeScale = 1f;
+
+        //Set reward ad timer
+        nextRewardTime = DateTime.Now.AddSeconds(15);
     }
     #endregion
 }
