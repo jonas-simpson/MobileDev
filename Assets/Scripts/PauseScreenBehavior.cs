@@ -42,4 +42,42 @@ public class PauseScreenBehavior : MainMenuBehavior
         Time.timeScale = (paused) ? 0 : 1;
         pauseMenu.SetActive(paused);
     }
+
+    #region Share Score via Twitter
+    /// <summary>
+    /// Web address to create a tweet
+    /// </summary>
+    private const string tweetTextAddress = "http://twitter.com/intent/tweet?text=";
+
+    /// <summary>
+    /// Where we want players to visit
+    /// </summary>
+    private string appStoreLink = "http://google.com";
+
+    [Tooltip("Reference to the player, for score")]
+    public PlayerBehavior player;
+
+    /// <summary>
+    /// Will open Twitter with a prebuilt tweet. When called on iOS or Android,
+    /// will open Twitter app if installed.
+    /// </summary>
+    public void TweetScore()
+    {
+        //Create contents of the tweet
+        string tweet =
+            "I got "
+            + string.Format("{0:0}", player.Score)
+            + " points in Endless Roller! Can you do better?";
+
+        //Create the entire message
+        string message = tweet + '\n' + appStoreLink;
+
+        //Ensure string is URL friendly
+        string url = UnityEngine.Networking.UnityWebRequest.EscapeURL(message);
+
+        //Open the URL to create the tweet
+        Application.OpenURL(tweetTextAddress + url);
+    }
+
+    #endregion
 }

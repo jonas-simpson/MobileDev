@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 /// <summary>
 /// Responsible for moving the player automatically and receiving input
@@ -20,6 +21,31 @@ public class PlayerBehavior : MonoBehaviour
     [Tooltip("How fast the ball moves forward automatically")]
     [Range(0, 10)]
     public float rollSpeed = 5;
+
+    [Header("Object References")]
+    public TextMeshProUGUI scoreText;
+
+    private float score = 0;
+
+    public float Score
+    {
+        get { return score; }
+        set
+        {
+            score = value;
+
+            //Check if scoreText has been assigned
+            if (scoreText == null)
+            {
+                Debug.LogError("Score text is not set. Please go to the Inspector and assign it.");
+                //if not assigned, do not attempt to update
+                return;
+            }
+
+            //Update the text to display the whole number portion of the score
+            scoreText.text = string.Format("{0:0}", score);
+        }
+    }
 
     public enum MobileHorizMovement
     {
@@ -65,6 +91,8 @@ public class PlayerBehavior : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
 
         minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
+
+        Score = 0;
     }
 
     /// <summary>
@@ -77,6 +105,8 @@ public class PlayerBehavior : MonoBehaviour
         {
             return;
         }
+
+        Score += Time.deltaTime;
 
         //Check if we are running on a mobile device
 #if UNITY_IOS || UNITY_ANDROID
