@@ -61,19 +61,19 @@ public class ObstacleBehavior : MonoBehaviour
         //If we found the button we can use it
         if (continueButton)
         {
-            if (UnityAdController.showAds)
-            {
-                //If player clicks on this button we want to show an ad and then continue
-                // var adController = GameObject.FindObjectOfType<UnityAdController>();
-                // continueButton.onClick.AddListener(adController.ShowAd);
-                // UnityAdController.obstacle = this;
-                StartCoroutine(ShowContinue(continueButton));
-            }
-            else
-            {
-                //If we can't play ad, no need for continue button
-                continueButton.gameObject.SetActive(false);
-            }
+            // if (UnityAdController.showAds)
+            // {
+            //     //If player clicks on this button we want to show an ad and then continue
+            //     // var adController = GameObject.FindObjectOfType<UnityAdController>();
+            //     // continueButton.onClick.AddListener(adController.ShowAd);
+            //     // UnityAdController.obstacle = this;
+            StartCoroutine(ShowContinue(continueButton));
+            // }
+            // else
+            // {
+            //     //If we can't play ad, no need for continue button
+            //     continueButton.gameObject.SetActive(false);
+            // }
         }
     }
 
@@ -105,7 +105,7 @@ public class ObstacleBehavior : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles resetting the game if needed
+    /// Handles continuing the game if needed
     /// </summary>
     public void Continue()
     {
@@ -155,6 +155,23 @@ public class ObstacleBehavior : MonoBehaviour
                 //Come back after 1 second and check again
                 //yield return new WaitForSecondsRealtime(1f);
                 yield return new WaitForSeconds(1f);
+            }
+            else if (!UnityAdController.showAds)
+            {
+                //It's valid to click the button now
+                contButton.interactable = true;
+
+                //If player clicks on the button we want to just continue
+                contButton.onClick.AddListener(Continue);
+
+                UnityAdController.obstacle = this;
+
+                Debug.Log("Button should say 'Free Continue'");
+                //Change text to allow continue
+                btnText.text = "Free Continue";
+
+                //We can now leave the coroutine
+                break;
             }
             else
             {

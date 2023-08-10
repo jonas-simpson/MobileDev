@@ -10,8 +10,11 @@ public class PauseScreenBehavior : MainMenuBehavior
     [Tooltip("Reference to the Pause Menu object to turn on / off")]
     public GameObject pauseMenu;
 
-    private void Start()
+    protected override void Start()
     {
+        //Initialize ads if needed
+        base.Start();
+
         if (!UnityAdController.showAds)
         {
             //If not showing ads, just start the game
