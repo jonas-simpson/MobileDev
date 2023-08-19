@@ -8,6 +8,8 @@ public class NotificationsController : MonoBehaviour
 {
     private GameNotificationsManager notificationsManager;
 
+    private static bool addedReminder = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,11 +26,19 @@ public class NotificationsController : MonoBehaviour
         //Initialize the manager so it can be used
         StartCoroutine(notificationsManager.Initialize(channel));
 
-        ShowNotification(
-            "Endless Runner",
-            "Come back and try to beat your score!!",
-            DateTime.Now.AddSeconds(5)
-        );
+        //Check if the notification hasnt been added yet
+        if (!addedReminder)
+        {
+            //Remind the player to come back tomorrow to play the game
+            ShowNotification(
+                "Endless Runner",
+                "Come back and try to beat your score!!",
+                DateTime.Now.AddDays(1)
+            );
+
+            //Cannot add again until the user comes back
+            addedReminder = true;
+        }
     }
 
     public void ShowNotification(string title, string body, DateTime deliveryTime)
@@ -40,6 +50,9 @@ public class NotificationsController : MonoBehaviour
             notification.Title = title;
             notification.Body = body;
             notification.DeliveryTime = deliveryTime;
+            notification.SmallIcon = "icon_0";
+            notification.LargeIcon = "icon_1";
+            notification.BadgeNumber = 5;
 
             notificationsManager.ScheduleNotification(notification);
         }
