@@ -42,14 +42,21 @@ public class MainMenuBehavior : MonoBehaviour
     {
         //Initialize the ShowAds variable
         UnityAdController.showAds = (PlayerPrefs.GetInt("Show Ads", 1) == 1);
+
+        if (facebookLogin != null)
+        {
+            SlideMenuIn(facebookLogin);
+        }
+        //Unpause the game if needed
+        Time.timeScale = 1;
     }
 
     public void ShowMainMenu()
     {
         if (facebookLogin != null && mainMenu != null)
         {
-            facebookLogin.SetActive(false);
-            mainMenu.SetActive(true);
+            SlideMenuIn(mainMenu);
+            SlideMenuOut(facebookLogin);
 
             if (FB.IsLoggedIn)
             {
@@ -57,6 +64,49 @@ public class MainMenuBehavior : MonoBehaviour
                 FB.API("/me?fields=name", HttpMethod.GET, SetName);
                 FB.API("/me/picture?width=256&height=256", HttpMethod.GET, SetProfilePic);
             }
+        }
+    }
+
+    /// <summary>
+    /// Will move an object from the left side of the screen to the center
+    /// </summary>
+    /// <param name="obj">The UI element we would like to move</param>
+    public void SlideMenuIn(GameObject obj)
+    {
+        obj.SetActive(true);
+        var rt = obj.GetComponent<RectTransform>();
+        if (rt)
+        {
+            //Set the object's position offscreen
+            var pos = rt.position;
+            pos.x = -Screen.width / 2;
+            rt.position = pos;
+
+            //Move the object to the center of the screen (x of 0 is centered)
+            var tween = LeanTween.moveX(rt, 0, 1.5f);
+            tween.setEase(LeanTweenType.easeOutExpo);
+            tween.setIgnoreTimeScale(true);
+            LeanTween.alpha(rt, 1, 0.5f);
+        }
+    }
+
+    /// <summary>
+    /// Will move an object to the right, offscreen
+    /// </summary>
+    /// <param name="obj">The UI element we would like to move</param>
+    public void SlideMenuOut(GameObject obj)
+    {
+        var rt = obj.GetComponent<RectTransform>();
+        if (rt)
+        {
+            var tween = LeanTween.moveX(rt, Screen.width, 0.5f);
+            tween.setEase(LeanTweenType.easeOutQuad);
+            tween.setIgnoreTimeScale(true);
+            tween.setOnComplete(() =>
+            {
+                obj.SetActive(false);
+            });
+            LeanTween.alpha(rt, 0, 0.5f);
         }
     }
 
