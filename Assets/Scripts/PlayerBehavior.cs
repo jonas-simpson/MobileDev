@@ -15,12 +15,12 @@ public class PlayerBehavior : MonoBehaviour
     /// </summary>
     private Rigidbody rb;
 
-    [Tooltip("How fast the ball moves left/right")]
-    public float dodgeSpeed = 5;
+    // [Tooltip("How fast the ball moves left/right")]
+    // public float dodgeSpeed = 5;
 
-    [Tooltip("How fast the ball moves forward automatically")]
-    [Range(0, 10)]
-    public float rollSpeed = 5;
+    // [Tooltip("How fast the ball moves forward automatically")]
+    // [Range(0, 10)]
+    // public float rollSpeed = 5;
 
     [Header("Object References")]
     public TextMeshProUGUI scoreText;
@@ -135,7 +135,7 @@ public class PlayerBehavior : MonoBehaviour
         }
 
         //Check if we're moving to the side
-        var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
+        var horizontalSpeed = Input.GetAxis("Horizontal") * ExampleSampleRC.dodgeSpeed;
 
         //Check if we're running in the Unity editor or a standalone build
 #if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_EDITOR
@@ -151,7 +151,7 @@ public class PlayerBehavior : MonoBehaviour
         if (horizMovement == MobileHorizMovement.Accelerometer)
         {
             //Move player based on the direction of the accelerometer
-            horizontalSpeed = Input.acceleration.x * dodgeSpeed;
+            horizontalSpeed = Input.acceleration.x * ExampleSampleRC.dodgeSpeed;
         }
         //Check if input has registered more than zero touches
         if (horizMovement == MobileHorizMovement.ScreenTouch)
@@ -162,7 +162,7 @@ public class PlayerBehavior : MonoBehaviour
         }
 #endif
 
-        rb.AddForce(horizontalSpeed, 0, rollSpeed);
+        rb.AddForce(horizontalSpeed, 0, ExampleSampleRC.rollSpeed);
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public class PlayerBehavior : MonoBehaviour
             xMove = 1;
         }
 
-        return xMove * dodgeSpeed;
+        return xMove * ExampleSampleRC.dodgeSpeed;
     }
 
     /// <summary>

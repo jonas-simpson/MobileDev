@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 using TMPro;
 
 public class ObstacleBehavior : MonoBehaviour
@@ -21,12 +22,23 @@ public class ObstacleBehavior : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        var go = other.gameObject;
+        var playerBehavior = go.GetComponent<PlayerBehavior>();
         //First check if we collided with the player
-        if (other.gameObject.GetComponent<PlayerBehavior>())
+        if (playerBehavior)
         {
             //Destroy (hide) the player
-            other.gameObject.SetActive(false);
-            player = other.gameObject;
+            go.SetActive(false);
+            player = go;
+
+            var eventData = new Dictionary<string, object> { { "Score", playerBehavior.Score } };
+
+            var result = Analytics.CustomEvent("GameOver", eventData);
+
+            if (result == AnalyticsResult.Ok)
+            {
+                Debug.Log("Event Sent: Game Over - score: " + playerBehavior.Score);
+            }
 
             //Call the function ResetGame after waitTime has passed
             Invoke("ResetGame", waitTime);

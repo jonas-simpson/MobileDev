@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Analytics;
 
 public class PauseScreenBehavior : MainMenuBehavior
 {
@@ -41,6 +42,15 @@ public class PauseScreenBehavior : MainMenuBehavior
         //If the game is paused, timescale is 0, otherwise 1
         Time.timeScale = (paused) ? 0 : 1;
         pauseMenu.SetActive(paused);
+
+        if (paused)
+        {
+            var result = Analytics.CustomEvent("Paused");
+            if (result == AnalyticsResult.Ok)
+            {
+                Debug.Log("Event sent: Paused");
+            }
+        }
     }
 
     #region Share Score via Twitter
