@@ -18,8 +18,8 @@ public class ExampleSampleRC : MonoBehaviour
     public struct appAttributes { }
 
     // Declare any Settings variables you’ll want to configure remotely:
-    public static float rollSpeed;
-    public static float dodgeSpeed;
+    public static float rollSpeed = 5;
+    public static float dodgeSpeed = 5;
 
     async Task InitializeRemoteConfigAsync()
     {

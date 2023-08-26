@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
   m_Name: RemoteConfigDataStoreAsset
   m_EditorClassIdentifier: 
-  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"933b5e39-8fa3-41c5-bc19-6d7876be5d2c\"\r\n   
+  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"a0066d7c-833b-4a26-91f7-023c39ef3381\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"RollSpeed\",\r\n      \"type\": \"float\",\r\n     
     \"value\": 5.0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"82a95eb6-c920-4101-99c4-1b37fec62d4d\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"40c29ddf-51b2-4cb8-bded-2358f1817b44\"\r\n    },\r\n    \"rs\": {\r\n     
     \"key\": \"DodgeSpeed\",\r\n      \"type\": \"float\",\r\n      \"value\": 5.0\r\n   
     }\r\n  }\r\n]"
-  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"933b5e39-8fa3-41c5-bc19-6d7876be5d2c\"\r\n   
+  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"a0066d7c-833b-4a26-91f7-023c39ef3381\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"RollSpeed\",\r\n      \"type\": \"float\",\r\n     
     \"value\": 5.0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"82a95eb6-c920-4101-99c4-1b37fec62d4d\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"40c29ddf-51b2-4cb8-bded-2358f1817b44\"\r\n    },\r\n    \"rs\": {\r\n     
     \"key\": \"DodgeSpeed\",\r\n      \"type\": \"float\",\r\n      \"value\": 5.0\r\n   
     }\r\n  }\r\n]"
   _environments: "[\r\n  {\r\n    \"projectId\": \"ff5d67d8-0c5c-48a4-9da1-a86922ed4d7f\",\r\n   
